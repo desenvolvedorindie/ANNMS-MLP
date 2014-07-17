@@ -2,11 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ANNMS">
-		<accessrules>
-			<accessrule kind="accessible" pattern="src/br/com/wfcreations/annms/api"/>
-		</accessrules>
-	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/SANNMF"/>
+	<classpathentry kind="lib" path="E:/Dropbox/Meu TCC/Projeto/workspace/ANNMS-MLP/lib/annms-api-1.0.0-prealpha.jar" sourcepath="E:/Dropbox/Meu TCC/Projeto/workspace/ANNMS-MLP/lib/annms-api-1.0.0-prealpha-src.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

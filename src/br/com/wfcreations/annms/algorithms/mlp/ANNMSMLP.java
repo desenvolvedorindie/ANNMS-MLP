@@ -54,26 +54,30 @@ public class ANNMSMLP implements INeuralNetwork {
 	public void create(Param[] params) throws Exception {
 		for (Param param : params) {
 			System.out.println(param.getID());
-			if (param.idIs(new ID(HIDDENS_ID)) && param.size() > 0 && hiddensNeuronsValidate.isValid(param.getValues()[0])) {
+			if (param.idIs(ID.create(HIDDENS_ID)) && param.size() > 0 && hiddensNeuronsValidate.isValid(param.getValues()[0])) {
 				this.hiddens = new int[param.getValues().length];
 				int i = 0;
 				for (IParamValue value : param.getValues())
-					this.hiddens[i++] = Int.getValueFor((IValue) value);
-
-			} else if (param.idIs(new ID(HASBIAS_ID))) {
+					if (value instanceof Int)
+						this.hiddens[i++] = Int.getValueFor((IValue) value);
+					else
+						throw new Exception("Invalid param valeu for Hiddens");
+			} else if (param.idIs(ID.create(HASBIAS_ID))) {
 				if (param.size() == 1 && hasBiasValidate.isValid(param.getValues()[0]))
 					this.hasBias = Bool.getValueFor((IValue) param.getValues()[0]);
 				else {
 					throw new Exception(String.format("Invalid %s param value", HASBIAS_ID));
 				}
-			} else if (param.idIs(new ID(ACTIVATIONFUNCTION_ID)) && param.size() == 1 && activationFunctionValidate.isValid(new ComplexList(param.getValues())) && activationFunctionTypeValidate.isValid(param.getValues()[0])) {
-				if (ID.getValueFor((IValue) param.getValueAt(0)).equals(ActivationFunction.TANH.name())) {
-					this.activationFunction = ActivationFunction.TANH;
-				} else {
-					this.activationFunction = ActivationFunction.SIGMOID;
+			} else if (param.idIs(ID.create(ACTIVATIONFUNCTION_ID))) {
+				if (param.size() == 1 && activationFunctionValidate.isValid(param.getValues()[0]) && activationFunctionTypeValidate.isValid(param.getValues()[0])) {
+					if (ID.getValueFor((IValue) param.getValueAt(0)).equals(ActivationFunction.TANH.name())) {
+						this.activationFunction = ActivationFunction.TANH;
+					} else {
+						this.activationFunction = ActivationFunction.SIGMOID;
+					}
 				}
 			} else {
-				throw new Exception("Invalid params");
+				throw new Exception(String.format("Invalid param %s", param.getID()));
 			}
 		}
 	}
@@ -104,7 +108,11 @@ public class ANNMSMLP implements INeuralNetwork {
 
 	@Override
 	public IValue[] run(IValue[] values) throws Exception {
-		// TODO
-		return null;
+		throw new IllegalArgumentException("Not trained");
+	}
+
+	@Override
+	public Param[] status() {
+		return new Param[] { new Param(ID.create("TRAINDED"), new IParamValue[] { Bool.FALSE }) };
 	}
 }

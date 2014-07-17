@@ -14,6 +14,9 @@ public class ANNMSBackpropagation implements ISupervisedLearningRule {
 
 	@Override
 	public INeuralNetwork train(INeuralNetwork network, Data inputs, Data outputs) {
+		if (!(network instanceof ANNMSMLP))
+			throw new IllegalArgumentException("Backpropagation only accept ANNMSMLP subtype");
+
 		return network;
 	}
 }
