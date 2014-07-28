@@ -1,5 +1,8 @@
 package br.com.wfcreations.annms.algorithms.mlp;
 
+import java.util.List;
+import java.util.Vector;
+
 import br.com.wfcreations.annms.api.data.*;
 import br.com.wfcreations.annms.api.data.value.*;
 import br.com.wfcreations.annms.api.data.value.validate.*;
@@ -13,23 +16,23 @@ public class ANNMSMLP implements INeuralNetwork {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final ValidateAbstract hiddensNeuronsValidate = new IntValidate(true);
+	private static final ValueValidate intValueValidate = new ValueValidate(Int.class);
 
-	private static final ValidateAbstract hasBiasValidate = new BooleanValidate(false);
+	private static final ValueValidate booleanValueValidate = new ValueValidate(Bool.class);
 
-	private static final ValidateAbstract activationFunctionValidate = new IDValidate(false);
+	private static final ValueValidate idValueValidate = new ValueValidate(ID.class);
 
-	private static final ValidateAbstract activationFunctionTypeValidate = new InArrayValidate(new String[] { "TAHN", "SIGMOID" }, true);
+	public static final ID TANH_ID = ID.create("TANH");
 
-	public static final String TAHN = "TAHN";
+	public static final ID SIGMOID_ID = ID.create("SIGMOID");
 
-	public static final String SIGMOID = "SIGMOID";
+	public static final ID HIDDENS_ID = ID.create("HIDDENS");
 
-	public static final String HIDDENS_ID = "HIDDENS";
+	public static final ID HASBIAS_ID = ID.create("HASBIAS");
 
-	public static final String HASBIAS_ID = "HASBIAS";
+	public static final ID ACTIVATIONFUNCTION_ID = ID.create("ACTIVATIONFUNCTION");
 
-	public static final String ACTIVATIONFUNCTION_ID = "ACTIVATIONFUNCTION";
+	public static final ID CONNECTINPUTSTOOUTPUTS_ID = ID.create("CONNECTINPUTSTOOUTPUTS");
 
 	public static enum ActivationFunction {
 		SIGMOID, TANH;
@@ -44,66 +47,66 @@ public class ANNMSMLP implements INeuralNetwork {
 		}
 	}
 
-	private int hiddens[];
+	private List<Integer> hiddens = new Vector<>();
 
 	private boolean hasBias = false;
 
 	private ActivationFunction activationFunction = ActivationFunction.TANH;
 
+	private boolean connectInputsToOutputs = false;
+
 	@Override
 	public void create(Param[] params) throws Exception {
+		int h;
 		for (Param param : params) {
-			System.out.println(param.getID());
-			if (param.idIs(ID.create(HIDDENS_ID)) && param.size() > 0 && hiddensNeuronsValidate.isValid(param.getValues()[0])) {
-				this.hiddens = new int[param.getValues().length];
-				int i = 0;
-				for (IParamValue value : param.getValues())
-					if (value instanceof Int)
-						this.hiddens[i++] = Int.getValueFor((IValue) value);
-					else
-						throw new Exception("Invalid param valeu for Hiddens");
-			} else if (param.idIs(ID.create(HASBIAS_ID))) {
-				if (param.size() == 1 && hasBiasValidate.isValid(param.getValues()[0]))
-					this.hasBias = Bool.getValueFor((IValue) param.getValues()[0]);
-				else {
-					throw new Exception(String.format("Invalid %s param value", HASBIAS_ID));
-				}
-			} else if (param.idIs(ID.create(ACTIVATIONFUNCTION_ID))) {
-				if (param.size() == 1 && activationFunctionValidate.isValid(param.getValues()[0]) && activationFunctionTypeValidate.isValid(param.getValues()[0])) {
-					if (ID.getValueFor((IValue) param.getValueAt(0)).equals(ActivationFunction.TANH.name())) {
-						this.activationFunction = ActivationFunction.TANH;
-					} else {
-						this.activationFunction = ActivationFunction.SIGMOID;
+			if (param.idEquals(HIDDENS_ID)) {
+				if (param.size() > 0 && intValueValidate.isValid(param.getValues()))
+					for (IParamValue value : param.getValues()) {
+						h = Int.getValueFor((IValue) value);
+						if (h > 0)
+							this.hiddens.add(h);
+						else
+							throw new Exception("Hiddens units quantity must be greater than 0");
 					}
-				}
+				else
+					throw new Exception(String.format("Invalid %s param value", HIDDENS_ID));
+			} else if (param.idEquals(HASBIAS_ID)) {
+				if (param.size() == 1 && booleanValueValidate.isValid(param.getValues()))
+					this.hasBias = Bool.getValueFor((IValue) param.getValueAt(0));
+				else
+					throw new Exception(String.format("Invalid %s param value", HASBIAS_ID));
+			} else if (param.idEquals(ACTIVATIONFUNCTION_ID)) {
+				if (param.size() == 1 && idValueValidate.isValid(param.getValues()) && (param.getValueAt(0).equals(TANH_ID) || param.getValueAt(0).equals(SIGMOID_ID))) {
+					if (param.getValueAt(0).equals(ID.create(ActivationFunction.SIGMOID.name())))
+						this.activationFunction = ActivationFunction.SIGMOID;
+					else
+						this.activationFunction = ActivationFunction.TANH;
+				} else
+					throw new Exception(String.format("Invalid %s param value", ACTIVATIONFUNCTION_ID));
+			} else if (param.idEquals(CONNECTINPUTSTOOUTPUTS_ID)) {
+				if (param.size() == 1 && booleanValueValidate.isValid(param.getValues()))
+					this.connectInputsToOutputs = Bool.getValueFor((IValue) param.getValueAt(0));
+				else
+					throw new Exception(String.format("Invalid %s param value", CONNECTINPUTSTOOUTPUTS_ID));
 			} else {
 				throw new Exception(String.format("Invalid param %s", param.getID()));
 			}
 		}
+
+		if (this.hiddens.size() == 0)
+			throw new Exception("Hiddens unit not defined");
 	}
 
-	public int[] getHiddens() {
+	public List<Integer> getHiddens() {
 		return hiddens;
-	}
-
-	public void setHiddens(int hiddens[]) {
-		this.hiddens = hiddens;
 	}
 
 	public boolean isHasBias() {
 		return hasBias;
 	}
 
-	public void setHasBias(boolean hasBias) {
-		this.hasBias = hasBias;
-	}
-
 	public ActivationFunction getActivationFunction() {
 		return activationFunction;
-	}
-
-	public void setActivationFunction(ActivationFunction activationFunction) {
-		this.activationFunction = activationFunction;
 	}
 
 	@Override
@@ -114,5 +117,9 @@ public class ANNMSMLP implements INeuralNetwork {
 	@Override
 	public Param[] status() {
 		return new Param[] { new Param(ID.create("TRAINDED"), new IParamValue[] { Bool.FALSE }) };
+	}
+
+	public boolean isConnectInputsToOutputs() {
+		return connectInputsToOutputs;
 	}
 }

@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>api</name>
+			<type>2</type>
+			<location>E:/Dropbox/Meu TCC/Projeto/workspace/ANNMS/api</location>
+		</link>
+	</linkedResources>
 </projectDescription>

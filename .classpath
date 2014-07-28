@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="src" path="api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SANNMF"/>
-	<classpathentry kind="lib" path="E:/Dropbox/Meu TCC/Projeto/workspace/ANNMS-MLP/lib/annms-api-1.0.0-prealpha.jar" sourcepath="E:/Dropbox/Meu TCC/Projeto/workspace/ANNMS-MLP/lib/annms-api-1.0.0-prealpha-src.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
