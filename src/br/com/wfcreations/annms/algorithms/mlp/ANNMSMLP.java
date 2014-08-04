@@ -6,6 +6,7 @@ import java.util.Vector;
 import br.com.wfcreations.annms.api.data.*;
 import br.com.wfcreations.annms.api.data.value.*;
 import br.com.wfcreations.annms.api.data.value.validate.*;
+import br.com.wfcreations.annms.api.lang.ArrayUtils;
 import br.com.wfcreations.annms.api.neuralnetwork.*;
 import br.com.wfcreations.sannmf.function.activation.IDerivativeActivationFunction;
 import br.com.wfcreations.sannmf.function.activation.Sigmoid;
@@ -116,7 +117,7 @@ public class ANNMSMLP implements INeuralNetwork {
 
 	@Override
 	public Param[] status() {
-		return new Param[] { new Param(ID.create("TRAINDED"), new IParamValue[] { Bool.FALSE }) };
+		return ArrayUtils.createArray(new Param(ID.create("TRAINDED"), ArrayUtils.createArray(Bool.FALSE)));
 	}
 
 	public boolean isConnectInputsToOutputs() {
